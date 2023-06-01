@@ -1,13 +1,16 @@
 import {createElement} from '../render.js';
 
+
 function createEventListTemplate() {
   return '<ul class="trip-events__list"></ul>';
 }
+
 
 export default class EventListView {
   getTemplate() {
     return createEventListTemplate();
   }
+
 
   getElement() {
     if (!this.element) {
@@ -16,6 +19,7 @@ export default class EventListView {
 
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;

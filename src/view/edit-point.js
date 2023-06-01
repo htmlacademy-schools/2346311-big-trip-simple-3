@@ -1,5 +1,6 @@
 import {createElement} from '../render.js';
 
+
 function createEditFormTemplate() {
   return (
     `<li class="trip-events__item">
@@ -140,10 +141,12 @@ function createEditFormTemplate() {
   );
 }
 
+
 export default class EditFormView {
   getTemplate() {
     return createEditFormTemplate();
   }
+
 
   getElement() {
     if (!this.element) {
@@ -152,6 +155,7 @@ export default class EditFormView {
 
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;

@@ -1,5 +1,6 @@
 import {createElement} from '../render.js';
 
+
 function createEventItemFormTemplate() {
   return (
     `<form class="event event--edit" action="#" method="post">
@@ -144,10 +145,12 @@ function createEventItemFormTemplate() {
   );
 }
 
+
 export default class NewItemFormView {
   getTemplate() {
     return createEventItemFormTemplate();
   }
+
 
   getElement() {
     if (!this.element) {
@@ -156,6 +159,7 @@ export default class NewItemFormView {
 
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;

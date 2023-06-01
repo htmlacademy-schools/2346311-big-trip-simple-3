@@ -1,5 +1,6 @@
 import {createElement} from '../render.js';
 
+
 function createSortTemplate() {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -27,10 +28,12 @@ function createSortTemplate() {
   );
 }
 
+
 export default class SortView {
   getTemplate() {
     return createSortTemplate();
   }
+
 
   getElement() {
     if (!this.element) {
@@ -39,6 +42,7 @@ export default class SortView {
 
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;

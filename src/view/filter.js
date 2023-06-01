@@ -1,5 +1,6 @@
 import {createElement} from '../render.js';
 
+
 function createFilterTemplate() {
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -16,10 +17,12 @@ function createFilterTemplate() {
   );
 }
 
+
 export default class FilterView {
   getTemplate() {
     return createFilterTemplate();
   }
+
 
   getElement() {
     if (!this.element) {
@@ -28,6 +31,7 @@ export default class FilterView {
 
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;
