@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
 import { destinations } from '../mock/destination.js';
 import { convertToBasicime, getItemFromItemsById, capitalizeType } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getOffersByType } from '../mock/const.js';
 
 
@@ -21,7 +21,7 @@ function createOffersTemplate(offers, type) {
 
 
 function createEditFormTemplate(tripPoint) {
-  const visibility = tripPoint.offersIDs.length === 0 ? 'visually-hidden' : '';
+  const visibility = getOffersByType(tripPoint.type).length === 0 ? 'visually-hidden' : '';
   const destination = getItemFromItemsById(destinations, tripPoint.destination);
   return (
     `<li class="trip-events__item">
@@ -139,27 +139,30 @@ function createEditFormTemplate(tripPoint) {
 }
 
 
-export default class EditFormView {
-  #element = null;
+export default class EditFormView extends AbstractView {
   #tripPoint = null;
+  #handleFormSubmit = null;
 
-  constructor(tripPoint) {
+  constructor({tripPoint, onFormSubmit}) {
+    super();
     this.#tripPoint = tripPoint;
+
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formSubmitHandler);
   }
+
 
   get template() {
     return createEditFormTemplate(this.#tripPoint);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
