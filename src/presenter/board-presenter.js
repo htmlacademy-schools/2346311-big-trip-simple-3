@@ -5,12 +5,14 @@ import EditFormView from '../view/edit-point';
 import NewItemFormView from '../view/create-form';
 import { render } from '../render';
 
+
 export default class BoardPresenter {
   eventListComponent = new EventListView();
 
   constructor({boardContainer}) {
     this.boardContainer = boardContainer;
   }
+
 
   init() {
     render(new SortView(), this.boardContainer);
