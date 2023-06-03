@@ -198,19 +198,4 @@ const offersByType = [
 ];
 
 
-const FilterType = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future'
-};
-
-
-const SortType = {
-  DAY: 'day',
-  EVENT: 'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offer'
-};
-
-
-export { offersByType, FilterType, SortType, pointTypes, descriptionPhrases, namesOfPlaces, fromToDates };
+export { namesOfPlaces, pointTypes, descriptionPhrases, fromToDates, offersByType };
