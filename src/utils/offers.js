@@ -11,4 +11,4 @@ const getRandomOffersIdsByType = (type) => {
 };
 
 
-export {getRandomOffersIdsByType, getOffersByType };
+export { getOffersByType, getRandomOffersIdsByType };
