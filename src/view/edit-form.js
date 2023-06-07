@@ -37,6 +37,7 @@ function createDetinationListTemplate(destinations) {
 function createOffersTemplate(offersIDs, curTypeOffers, id, isDisabled) {
   return curTypeOffers.map((offer) => {
     const isOfferChecked = offersIDs.includes(offer.id) ? 'checked' : '';
+
     return `
     <div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked} ${(isDisabled) ? 'disabled' : ''}>
