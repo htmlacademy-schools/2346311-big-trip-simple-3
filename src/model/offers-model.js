@@ -6,7 +6,6 @@ export default class ModelOffers extends Observable {
   #offers = [];
   #waypointsApiService = null;
 
-
   constructor({waypointsApiService}) {
     super();
     this.#waypointsApiService = waypointsApiService;
