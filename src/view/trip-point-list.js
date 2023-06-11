@@ -1,13 +1,13 @@
 import AbstractView from '../framework/view/abstract-view';
 
 
-function createWaypointListTemplate() {
-  return '<ul class="trip-events__list"></ul>';
-}
+const createEventListTemplate = () => `
+  <ul class="trip-events__list"></ul>
+`;
 
 
-export default class WaypointList extends AbstractView {
+export default class EventListView extends AbstractView {
   get template() {
-    return createWaypointListTemplate();
+    return createEventListTemplate();
   }
 }

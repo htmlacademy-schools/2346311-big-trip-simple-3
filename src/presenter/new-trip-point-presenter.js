@@ -1,45 +1,77 @@
-import EditForm from '../view/edit-form';
-import {remove} from '../framework/render';
-import {isEsc} from '../utils/utils';
-import {render, RenderPosition} from '../render';
-import {UpdateType, UserAction} from '../utils/const';
+import EditFormView from '../view/edit-form';
+import {UPDATE_TYPE, USER_ACTION} from '../utils/const';
+import {remove, render, RenderPosition} from '../framework/render';
 
 
 export default class NewWaypointPresenter {
-  #handleDataChange = null;
-  #handleDestroy = null;
-  #waypointListContainer = null;
-  #waypointEditComponent = null;
 
-  constructor({waypointListContainer, onDataChange, onDestroy}) {
-    this.#waypointListContainer = waypointListContainer;
-    this.#handleDataChange = onDataChange;
-    this.#handleDestroy = onDestroy;
+  #handleChange;
+  #handelDestroy;
+  #tripPointsListContainer;
+  #tripPointsFormComponent;
+
+
+  constructor({tripEventsListContainer, onDataChange, onDestroy}) {
+    this.#tripPointsListContainer = tripEventsListContainer;
+    this.#handleChange = onDataChange;
+    this.#handelDestroy = onDestroy;
   }
 
 
-  init(destinations, offers) {
-    if (this.#waypointEditComponent !== null) {
+  init = ({destinations, offers}) => {
+    if (this.#tripPointsFormComponent !== undefined) {
       return;
     }
 
-    this.#waypointEditComponent = new EditForm({
-      destinations: destinations,
-      offers: offers,
-      onSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick,
-      isEditForm: false
-    });
+    try {
+      this.#tripPointsFormComponent = new EditFormView({
+        destinations,
+        offers,
+        onFormSubmit: this.#onSubmit,
+        onDeleteClick: this.#onDeleteClick,
+        onRollUpButton: this.#onDeleteClick,
+        isEditForm: false
+      });
 
-    render(this.#waypointEditComponent, this.#waypointListContainer,
-      RenderPosition.AFTERBEGIN);
+      render(this.#tripPointsFormComponent, this.#tripPointsListContainer,
+        RenderPosition.AFTERBEGIN);
 
-    document.body.addEventListener('keydown', this.#ecsKeyDownHandler);
+      document.body.addEventListener('keydown', this.#ecsKeyHandler);
+    } catch (error) { /* empty */ }
+  };
+
+
+  destroy() {
+    if (this.#tripPointsFormComponent === null) {
+      return;
+    }
+
+    this.#handelDestroy();
+
+    remove(this.#tripPointsFormComponent);
+    this.#tripPointsFormComponent = null;
+
+    document.body.removeEventListener('keydown', this.#ecsKeyHandler);
   }
 
 
+  #onSubmit = (tripEvent) => {
+    this.#handleChange(
+      USER_ACTION.ADD_TRIPPOINT,
+      UPDATE_TYPE.MINOR,
+      this.#deleteId(tripEvent)
+    );
+    this.destroy();
+  };
+
+
+  #onDeleteClick = () => {
+    this.destroy();
+  };
+
+
   setSaving() {
-    this.#waypointEditComponent.updateElement({
+    this.#tripPointsFormComponent.updateElement({
       isDisabled: true,
       isSaving: true,
     });
@@ -48,56 +80,27 @@ export default class NewWaypointPresenter {
 
   setAborting() {
     const resetFormState = () => {
-      this.#waypointEditComponent.updateElement({
+      this.#tripPointsFormComponent.updateElement({
         isDisabled: false,
-        isSavinf: false,
+        isSaving: false,
         isDeleting: false,
       });
     };
 
-    this.#waypointEditComponent.shake(resetFormState);
+    this.#tripPointsFormComponent.shake(resetFormState);
   }
 
 
-  destroy() {
-    if (this.#waypointEditComponent === null) {
-      return;
-    }
-
-    this.#handleDestroy();
-
-    remove(this.#waypointEditComponent);
-    this.#waypointEditComponent = null;
-
-    document.body.removeEventListener('keydown', this.#ecsKeyDownHandler);
-  }
-
-
-  #ecsKeyDownHandler = (evt) => {
-    if (isEsc(evt)) {
+  #ecsKeyHandler = (evt) => {
+    if (evt.key === 'Escape') {
       evt.preventDefault();
       this.destroy();
     }
   };
 
 
-  #handleFormSubmit = (waypoint) => {
-    this.#handleDataChange(
-      UserAction.ADD_WAYPOINT,
-      UpdateType.MINOR,
-
-      this.#deleteId(waypoint)
-    );
-  };
-
-
-  #handleDeleteClick = () => {
-    this.destroy();
-  };
-
-
-  #deleteId = (waypoint) => {
-    delete waypoint.id;
-    return waypoint;
+  #deleteId = (tripEvent) => {
+    delete tripEvent.id;
+    return tripEvent;
   };
 }
