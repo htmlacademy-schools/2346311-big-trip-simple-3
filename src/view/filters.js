@@ -1,54 +1,49 @@
+import {convertToLowerCase} from '../utils/utils';
 import AbstractView from '../framework/view/abstract-view';
 
 
-function createFilterItemTemplate(filter, currentFilterType) {
-  return (`
-  <div class="trip-filters__filter">
-      <input
-      id="filter-${filter.type}"
-      class="trip-filters__filter-input  visually-hidden"
-      type="radio"
-      name="trip-filter"
-      value="${filter.type}"
-      ${filter.type === currentFilterType ? 'checked' : ''} ${filter.count === 0 ? 'disabled' : ''}>
-      <label class="trip-filters__filter-label"
-      for="filter-${filter.type}">${filter.name}</label>
-  </div>`);
-}
+const createFilterItemTemplate = (filter, currentFilter) => `
+    <div class="trip-filters__filter">
+        <input
+            id="filter-${convertToLowerCase(filter.type)}"
+            class="trip-filters__filter-input visually-hidden"
+            type="radio"
+            name="trip-filter"
+            value="${filter.type}"
+            ${filter.type === currentFilter ? 'checked' : ''}
+            ${(filter.count === 0) ? 'disabled="true"' : ''}
+        >
+        <label class="trip-filters__filter-label" for="filter-${convertToLowerCase(filter.type)}">${filter.type}</label>
+    </div>
+`;
 
 
-function createFilterTemplate(filterItems, currentFilterType) {
-  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
-  return (`
-    <form class="trip-filters" action="#" method="get">
-      ${filterItemsTemplate}
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>`
-  );
-}
+const createFilterTemplate = (filters, currentFilter) =>
+  `<form class="trip-filters" action="#" method="get">
+    ${filters.map((filter) => createFilterItemTemplate(filter, currentFilter)).join('')}
+    <button class="visually-hidden" type="submit">Accept filter</button>
+  </form>`;
 
 
-export default class Filters extends AbstractView {
-  #filters = null;
-  #currentFilter = null;
-  #handleFilterTypeChange = null;
+export default class FilterView extends AbstractView {
+  #filters;
+  #currentFilter;
 
-  constructor({filters, currentFilterType, onFilterTypeChange}) {
+  constructor({filters, currentFilter, onFilterChange}) {
     super();
     this.#filters = filters;
-    this.#currentFilter = currentFilterType;
-    this.#handleFilterTypeChange = onFilterTypeChange;
-    this.element.addEventListener('change', this.#filterTypeChangeHandler);
-  }
+    this.#currentFilter = currentFilter;
+    this._callback.onFilterChange = onFilterChange;
 
+    this.element.addEventListener('change', this.#filterChangeHandler);
+  }
 
   get template() {
     return createFilterTemplate(this.#filters, this.#currentFilter);
   }
 
-
-  #filterTypeChangeHandler = (evt) => {
+  #filterChangeHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFilterTypeChange(evt.target.value);
+    this._callback.onFilterChange(evt.target.value);
   };
 }
